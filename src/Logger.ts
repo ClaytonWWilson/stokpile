@@ -1,57 +1,15 @@
-export enum LogLevel {
-  TRACE = 10,
-  DEBUG = 20,
-  INFO = 30,
-  WARN = 40,
-  FATAL = 50,
-}
+import type {
+  LogOutputs,
+  LogContext,
+  BucketInfo,
+  LogMeta,
+  LogConfig,
+} from "./types/logger";
 
-enum LogLabel {
-  TRACE = "trace",
-  DEBUG = "debug",
-  INFO = "info",
-  WARN = "warn",
-  FATAL = "fatal",
-}
+import { LogLabel, LogLevel } from "./types/logger";
+import type { DeepRequired } from "generic";
 
-export interface TampermonkeyOutputOpts {
-  enabled: boolean;
-  maxBuckets?: number;
-  bucketIndexKey?: string;
-}
-
-export interface ConsoleOutputOpts {
-  enabled: boolean;
-}
-
-export interface LogOutputs {
-  console?: ConsoleOutputOpts;
-  tampermonkey?: TampermonkeyOutputOpts;
-  callback: ((message: string) => any) | undefined;
-}
-
-export interface LogConfig {
-  outputs?: LogOutputs;
-  bufferCapacity?: number;
-}
-
-export interface LogContext {
-  level?: number;
-  [key: string]: any;
-}
-
-interface LogMeta {
-  context: LogContext;
-  time: number;
-}
-
-interface BucketInfo {
-  name: string;
-  size: number;
-  createdAt: number;
-}
-
-const DEFAULT_OUTPUTS: Required<LogOutputs> = {
+const DEFAULT_OUTPUTS: DeepRequired<LogOutputs> = {
   console: { enabled: true },
   tampermonkey: {
     enabled: false,
@@ -60,10 +18,12 @@ const DEFAULT_OUTPUTS: Required<LogOutputs> = {
   },
   callback: undefined,
 };
-const DEFAULT_CONFIG: Required<LogConfig> = {
+
+const DEFAULT_CONFIG: DeepRequired<LogConfig> = {
   outputs: DEFAULT_OUTPUTS,
   bufferCapacity: 100_000,
 };
+
 const MESSAGE_STYLE = "background: inherit; color: inherit;";
 
 const STYLES = {
@@ -148,7 +108,7 @@ export function stringifyInstance(instance: {}) {
 }
 
 export function objectifyInstance(instance: any) {
-  let ret = {};
+  let ret: Record<string, any> = {};
   if (typeof instance !== "object") {
     ret[`${typeof instance}`] = instance;
   }
@@ -181,7 +141,7 @@ export class Logger {
   private buffer: string[];
   private bufferLength: number;
   private bucketIndex: BucketInfo[];
-  private outputs: Required<LogOutputs>;
+  private outputs: DeepRequired<LogOutputs>;
   private bufferCapacity: number;
 
   constructor(config: LogConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG))) {
@@ -260,8 +220,9 @@ export class Logger {
         this.flush();
       } else {
         while (this.bufferLength >= this.bufferCapacity) {
-          let stale = this.buffer.shift();
-          this.bufferLength -= stale.length;
+          const stale = this.buffer.shift();
+          const offset = stale ? stale.length : 0;
+          this.bufferLength -= offset;
         }
       }
     }
@@ -270,7 +231,7 @@ export class Logger {
   trace(message: string, context?: Object) {
     this.log(message, {
       level: LogLevel.TRACE,
-      stacktrace: new Error().stack.slice(13), // Remove the "Error\n    at "
+      stacktrace: new Error().stack?.slice(13), // Remove the "Error\n    at "
       ...context,
     });
   }
