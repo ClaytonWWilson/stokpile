@@ -1,0 +1,30 @@
+{
+  "name": "lognautica",
+  "version": "0.0.1",
+  "description": "Lightweight javascript logger with tampermonkey storage support",
+  "main": "Logger.ts",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "@types/tampermonkey": "^5.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ClaytonWWilson/lognautica.git"
+  },
+  "keywords": [
+    "log",
+    "logging",
+    "tampermonkey"
+  ],
+  "author": "Clayton Wilson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ClaytonWWilson/lognautica/issues"
+  },
+  "homepage": "https://github.com/ClaytonWWilson/lognautica#readme"
+}
