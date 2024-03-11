@@ -34,6 +34,18 @@ test("Constructors", () => {
       callback: () => {},
     },
   });
+  const _logger8 = new Logger({
+    outputs: {
+      console: {
+        style: {
+          trace: { backgroundColor: "#ababab", textColor: "#bababa" },
+          debug: { backgroundColor: "#436ba3", textColor: "#197921" },
+          info: { backgroundColor: "#9991aa", textColor: "#906851" },
+          warn: { backgroundColor: "#deadbe", textColor: "#ad7ce3" },
+        },
+      },
+    },
+  });
 });
 
 test("Log Messages", () => {

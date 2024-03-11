@@ -5,7 +5,6 @@ import {
   StrictLogOutputs,
 } from "./types/logger";
 import { gzip, randomString, stringifyInstance, ungzip } from "./lib/utilities";
-import { DEFAULT_STYLES } from "./lib/defaults";
 
 import { LogContext, BucketInfo, LogMeta, LogConfig } from "./types/logger";
 
@@ -112,13 +111,13 @@ export class Logger {
   }
 
   private consolePrint(label: LogLabel, message: string, meta: LogMeta) {
-    const style = `background: ${DEFAULT_STYLES[label].background}; color: ${DEFAULT_STYLES[label].color}; font-weight: bold; border-radius: 4px;`;
+    const styleFormatter = `background: ${this.outputs.console.style[label].backgroundColor}; color: ${this.outputs.console.style[label].textColor}; font-weight: bold; border-radius: 4px;`;
 
     switch (label) {
       case LogLabel.TRACE:
         console.trace(
           `%c ${label} ` + `%c ${message}`,
-          style,
+          styleFormatter,
           MESSAGE_STYLE,
           meta
         );
@@ -126,7 +125,7 @@ export class Logger {
       case LogLabel.DEBUG:
         console.debug(
           `%c ${label} ` + `%c ${message}`,
-          style,
+          styleFormatter,
           MESSAGE_STYLE,
           meta
         );
@@ -134,7 +133,7 @@ export class Logger {
       case LogLabel.INFO:
         console.info(
           `%c ${label} ` + `%c ${message}`,
-          style,
+          styleFormatter,
           MESSAGE_STYLE,
           meta
         );
@@ -142,7 +141,7 @@ export class Logger {
       case LogLabel.WARN:
         console.warn(
           `%c ${label} ` + `%c ${message}`,
-          style,
+          styleFormatter,
           MESSAGE_STYLE,
           meta
         );
@@ -150,7 +149,7 @@ export class Logger {
       case LogLabel.FATAL:
         console.error(
           `%c ${label} ` + `%c ${message}`,
-          style,
+          styleFormatter,
           MESSAGE_STYLE,
           meta
         );
@@ -158,7 +157,7 @@ export class Logger {
       default:
         console.log(
           `%c ${label} ` + `%c ${message}`,
-          style,
+          styleFormatter,
           MESSAGE_STYLE,
           meta
         );

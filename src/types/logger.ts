@@ -26,10 +26,88 @@ export interface ConsoleOutputOpts {
   enabled: boolean;
 }
 
+export const ConsoleStyles = z
+  .object({
+    trace: z
+      .object({
+        backgroundColor: z.string().default("#949494").optional(),
+        textColor: z.string().default("#fff").optional(),
+      })
+      .default({})
+      .optional(),
+    debug: z
+      .object({
+        backgroundColor: z.string().default("#fe7bf3").optional(),
+        textColor: z.string().default("#fff").optional(),
+      })
+      .default({})
+      .optional(),
+    info: z
+      .object({
+        backgroundColor: z.string().default("#65f10e").optional(),
+        textColor: z.string().default("#fff").optional(),
+      })
+      .default({})
+      .optional(),
+    warn: z
+      .object({
+        backgroundColor: z.string().default("#faf200").optional(),
+        textColor: z.string().default("#000").optional(),
+      })
+      .default({})
+      .optional(),
+    fatal: z
+      .object({
+        backgroundColor: z.string().default("#cc0018").optional(),
+        textColor: z.string().default("#fff").optional(),
+      })
+      .default({})
+      .optional(),
+  })
+  .optional();
+
+export type ConsoleStyles = z.infer<typeof ConsoleStyles>;
+
+export const StrictConsoleStyles = z
+  .object({
+    trace: z
+      .object({
+        backgroundColor: z.string().default("#949494"),
+        textColor: z.string().default("#fff"),
+      })
+      .default({}),
+    debug: z
+      .object({
+        backgroundColor: z.string().default("#fe7bf3"),
+        textColor: z.string().default("#fff"),
+      })
+      .default({}),
+    info: z
+      .object({
+        backgroundColor: z.string().default("#65f10e"),
+        textColor: z.string().default("#fff"),
+      })
+      .default({}),
+    warn: z
+      .object({
+        backgroundColor: z.string().default("#faf200"),
+        textColor: z.string().default("#000"),
+      })
+      .default({}),
+    fatal: z
+      .object({
+        backgroundColor: z.string().default("#cc0018"),
+        textColor: z.string().default("#fff"),
+      })
+      .default({}),
+  })
+  .default({});
+
 export const LogOutputs = z.object({
   console: z
     .object({
       enabled: z.boolean().default(true).optional(),
+      style: ConsoleStyles,
     })
     .default({})
     .optional(),
@@ -57,6 +135,7 @@ export const StrictLogOutputs = z.object({
   console: z
     .object({
       enabled: z.boolean().default(true),
+      style: StrictConsoleStyles,
     })
     .default({}),
   tampermonkey: z
@@ -94,25 +173,4 @@ export interface BucketInfo {
   createdAt: number;
 }
 
-export interface ConsoleStyles {
-  trace?: {
-    background?: string;
-    color?: string;
-  };
-  debug?: {
-    background?: string;
-    color?: string;
-  };
-  info?: {
-    background?: string;
-    color?: string;
-  };
-  warn?: {
-    background?: string;
-    color?: string;
-  };
-  fatal?: {
-    background?: string;
-    color?: string;
-  };
-}
+export type StrictConsoleStyles = z.infer<typeof StrictConsoleStyles>;
