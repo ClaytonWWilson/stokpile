@@ -50,3 +50,26 @@ export interface BucketInfo {
   size: number;
   createdAt: number;
 }
+
+export interface ConsoleStyles {
+  trace?: {
+    background?: string;
+    color?: string;
+  };
+  debug?: {
+    background?: string;
+    color?: string;
+  };
+  info?: {
+    background?: string;
+    color?: string;
+  };
+  warn?: {
+    background?: string;
+    color?: string;
+  };
+  fatal?: {
+    background?: string;
+    color?: string;
+  };
+}
