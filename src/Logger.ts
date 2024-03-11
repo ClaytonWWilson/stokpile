@@ -387,9 +387,7 @@ export class Logger {
 
     let logs = [...this.buffer];
 
-    for (let i = this.bucketIndex.length - 1; i >= 0; i--) {
-      // Get name from index
-      const bucket = this.bucketIndex[i];
+    for (const bucket of this.bucketIndex) {
       // Get data from bucket
       const gzipped = GM_getValue(bucket.name, undefined);
       if (gzipped === undefined) {

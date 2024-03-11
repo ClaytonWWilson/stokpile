@@ -14,7 +14,9 @@ const productionBuildMinified = {
   plugins: [
     typescript({
       sourceMap: false,
+      inlineSourceMap: false,
       inlineSources: false,
+      removeComments: true,
     }),
 
     terser(),
@@ -35,7 +37,9 @@ const productionBuild = {
   plugins: [
     typescript({
       sourceMap: false,
+      inlineSourceMap: false,
       inlineSources: false,
+      removeComments: true,
     }),
   ],
   watch: {
