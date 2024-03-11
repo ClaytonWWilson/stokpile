@@ -7,7 +7,9 @@
     "test": "tests"
   },
   "devDependencies": {
+    "@playwright/test": "^1.42.1",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^20.11.25",
     "@types/rollup": "^0.54.0",
     "@types/tampermonkey": "^5.0.2",
     "rollup": "^2.3.4",
@@ -33,5 +35,9 @@
   "bugs": {
     "url": "https://github.com/ClaytonWWilson/lognautica/issues"
   },
-  "homepage": "https://github.com/ClaytonWWilson/lognautica#readme"
+  "homepage": "https://github.com/ClaytonWWilson/lognautica#readme",
+  "dependencies": {
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "zod": "^3.22.4"
+  }
 }

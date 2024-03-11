@@ -1,20 +1,8 @@
-import { LogLabel, LogLevel } from "./types/logger";
+import { LogLabel, LogLevel, LogOutputs } from "./types/logger";
 import { gzip, randomString, stringifyInstance, ungzip } from "./lib/utilities";
-import {
-  DEFAULT_OUTPUTS,
-  DEFAULT_CONFIG,
-  DEFAULT_STYLES,
-} from "./lib/defaults";
+import { DEFAULT_STYLES } from "./lib/defaults";
 
-import type {
-  LogOutputs,
-  LogContext,
-  BucketInfo,
-  LogMeta,
-  LogConfig,
-} from "./types/logger";
-
-import type { DeepRequired } from "generic";
+import { LogContext, BucketInfo, LogMeta, LogConfig } from "./types/logger";
 
 const MESSAGE_STYLE = "background: inherit; color: inherit;";
 
@@ -36,44 +24,15 @@ export class Logger {
   private buffer: string[];
   private bufferLength: number;
   private bucketIndex: BucketInfo[];
-  private outputs: DeepRequired<LogOutputs>;
+  private outputs: LogOutputs;
   private bufferCapacity: number;
 
-  constructor(config: LogConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG))) {
+  constructor(config: Partial<LogConfig> = {}) {
     this.buffer = [];
     this.bufferLength = 0;
-    this.bufferCapacity = config.bufferCapacity
-      ? config.bufferCapacity
-      : DEFAULT_CONFIG.bufferCapacity;
-
-    // Parse outputs config
-    if (!config.outputs) {
-      this.outputs = JSON.parse(JSON.stringify(DEFAULT_OUTPUTS));
-    } else {
-      this.outputs = {
-        console: {
-          enabled: config.outputs.console
-            ? config.outputs.console.enabled
-            : DEFAULT_OUTPUTS.console.enabled,
-        },
-        tampermonkey: {
-          enabled: config.outputs.tampermonkey
-            ? config.outputs.tampermonkey.enabled
-            : DEFAULT_OUTPUTS.tampermonkey.enabled,
-          bucketIndexKey:
-            config.outputs.tampermonkey &&
-            config.outputs.tampermonkey.bucketIndexKey
-              ? config.outputs.tampermonkey.bucketIndexKey
-              : DEFAULT_OUTPUTS.tampermonkey.bucketIndexKey,
-          maxBuckets:
-            config.outputs.tampermonkey &&
-            config.outputs.tampermonkey.maxBuckets
-              ? config.outputs.tampermonkey.maxBuckets
-              : DEFAULT_OUTPUTS.tampermonkey.maxBuckets,
-        },
-        callback: config.outputs.callback ? config.outputs.callback : undefined,
-      };
-    }
+    const parsedConfig = LogConfig.parse(config);
+    this.bufferCapacity = parsedConfig.bufferCapacity;
+    this.outputs = parsedConfig.outputs;
 
     if (this.outputs.tampermonkey.enabled) {
       this.bucketIndex = JSON.parse(

@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export enum LogLevel {
   TRACE = 10,
   DEBUG = 20,
@@ -24,16 +26,30 @@ export interface ConsoleOutputOpts {
   enabled: boolean;
 }
 
-export interface LogOutputs {
-  console?: ConsoleOutputOpts;
-  tampermonkey?: TampermonkeyOutputOpts;
-  callback: ((message: string) => any) | undefined;
-}
+export const LogOutputs = z.object({
+  console: z
+    .object({
+      enabled: z.boolean().default(true),
+    })
+    .default({}),
+  tampermonkey: z
+    .object({
+      enabled: z.boolean().default(false),
+      maxBuckets: z.number().default(10),
+      bucketIndexKey: z.string().default("bucket_index"),
+    })
+    .default({}),
+  callback: z.function().args(z.string()).nullish(),
+});
 
-export interface LogConfig {
-  outputs?: LogOutputs;
-  bufferCapacity?: number;
-}
+export type LogOutputs = z.infer<typeof LogOutputs>;
+
+export const LogConfig = z.object({
+  outputs: LogOutputs.default({}),
+  bufferCapacity: z.number().default(100000),
+});
+
+export type LogConfig = z.infer<typeof LogConfig>;
 
 export interface LogContext {
   level?: number;

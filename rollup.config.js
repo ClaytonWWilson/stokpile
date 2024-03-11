@@ -1,5 +1,6 @@
 import { terser } from "rollup-plugin-terser";
 import typescript from "@rollup/plugin-typescript";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -12,6 +13,7 @@ const productionBuildMinified = {
     file: "dist/lognautica.min.js",
   },
   plugins: [
+    nodeResolve({ preferBuiltins: true }),
     typescript({
       sourceMap: false,
       inlineSourceMap: false,
@@ -35,6 +37,7 @@ const productionBuild = {
     file: "dist/lognautica.js",
   },
   plugins: [
+    nodeResolve({ preferBuiltins: true }),
     typescript({
       sourceMap: false,
       inlineSourceMap: false,
@@ -56,6 +59,7 @@ const devBuild = {
     file: "dist/lognautica.dev.js",
   },
   plugins: [
+    nodeResolve({ preferBuiltins: true }),
     typescript({
       sourceMap: true,
       inlineSources: true,
