@@ -1,4 +1,9 @@
-import { LogLabel, LogLevel, LogOutputs } from "./types/logger";
+import {
+  LogLabel,
+  LogLevel,
+  StrictLogConfig,
+  StrictLogOutputs,
+} from "./types/logger";
 import { gzip, randomString, stringifyInstance, ungzip } from "./lib/utilities";
 import { DEFAULT_STYLES } from "./lib/defaults";
 
@@ -24,13 +29,13 @@ export class Logger {
   private buffer: string[];
   private bufferLength: number;
   private bucketIndex: BucketInfo[];
-  private outputs: LogOutputs;
+  private outputs: StrictLogOutputs;
   private bufferCapacity: number;
 
-  constructor(config: Partial<LogConfig> = {}) {
+  constructor(config: LogConfig = {}) {
     this.buffer = [];
     this.bufferLength = 0;
-    const parsedConfig = LogConfig.parse(config);
+    const parsedConfig = StrictLogConfig.parse(config);
     this.bufferCapacity = parsedConfig.bufferCapacity;
     this.outputs = parsedConfig.outputs;
 
