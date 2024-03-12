@@ -1,3 +1,5 @@
+import { LogLabel, LogLevel } from "logger";
+
 export function blobToBase64(blob: Blob) {
   return new Promise<string | ArrayBuffer>((resolve, _) => {
     const reader = new FileReader();
@@ -70,4 +72,18 @@ export function randomString(length: number) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
+
+export function getLabel(level: number) {
+  if (level <= LogLevel.TRACE) {
+    return LogLabel.TRACE;
+  } else if (level <= LogLevel.DEBUG) {
+    return LogLabel.DEBUG;
+  } else if (level <= LogLevel.INFO) {
+    return LogLabel.INFO;
+  } else if (level <= LogLevel.WARN) {
+    return LogLabel.WARN;
+  } else {
+    return LogLabel.FATAL;
+  }
 }
