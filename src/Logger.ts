@@ -16,11 +16,6 @@ export class Logger {
     return this;
   }
 
-  ok() {
-    // TODO: Check all outputs and storage for required props
-    return this;
-  }
-
   log(message: string, level: LogLevel, context: LogContext) {
     // const label = getLabel(level);
 

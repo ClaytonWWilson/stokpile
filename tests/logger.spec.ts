@@ -1,65 +1,56 @@
 import { expect, test } from "@playwright/test";
 import { Logger } from "../src/Logger";
+import Console from "../src/outputs/Console";
+import Tampermonkey from "../src/outputs/Tampermonkey";
+import Callback from "../src/outputs/Callback";
+import { LogContext, LogLevel, LogMeta } from "../src/types/logger";
 
-// Can't use tampermonkey since the tampermonkey functions are not defined in the testing suite
-test("Constructors", () => {
-  const _logger0 = new Logger();
-  const _logger1 = new Logger({});
+test("Constructor", () => {
+  const _logger = new Logger();
+});
 
-  const _logger2 = new Logger({
-    outputs: {
-      tampermonkey: {
-        enabled: false,
-        maxBuckets: 0,
-        bucketIndexKey: "",
-      },
+test("Add outputs", () => {
+  const logger = new Logger();
+
+  const consoleOutput = new Console();
+  const tampermonkeyOutput = new Tampermonkey();
+  const callbackOutput = new Callback({
+    enabled: true,
+    callback: (message, meta, context) => {
+      console.log(message, meta, context);
+      return;
     },
   });
-  const _logger3 = new Logger({
-    outputs: {
-      console: {
-        enabled: false,
-      },
-    },
-  });
-  const _logger4 = new Logger({ outputs: { console: { enabled: true } } });
-  const _logger5 = new Logger({
-    outputs: { console: { enabled: false }, tampermonkey: { enabled: false } },
-  });
-  const _logger6 = new Logger({ outputs: { callback: () => {} } });
-  const _logger7 = new Logger({
-    outputs: {
-      console: { enabled: true },
-      tampermonkey: { enabled: false },
-      callback: () => {},
-    },
-  });
-  const _logger8 = new Logger({
-    outputs: {
-      console: {
-        style: {
-          trace: { backgroundColor: "#ababab", textColor: "#bababa" },
-          debug: { backgroundColor: "#436ba3", textColor: "#197921" },
-          info: { backgroundColor: "#9991aa", textColor: "#906851" },
-          warn: { backgroundColor: "#deadbe", textColor: "#ad7ce3" },
-        },
-      },
-    },
-  });
+  logger
+    .addOutput(consoleOutput)
+    .addOutput(tampermonkeyOutput)
+    .addOutput(callbackOutput);
+});
+
+test("Add storage", () => {
+  const logger = new Logger();
+
+  const tampermonkeyOutput = new Tampermonkey();
+  logger.setStorage(tampermonkeyOutput);
 });
 
 test("Log Messages", () => {
-  let logs = "";
-  const logger = new Logger({
-    outputs: {
-      tampermonkey: { enabled: false },
-      console: { enabled: false },
-      callback: (message) => {
-        logs += message + "\n";
-      },
+  let logMessages: string[] = [];
+  let logMetas: LogMeta[] = [];
+  let logContexts: LogContext[] = [];
+
+  const callbackOutput = new Callback({
+    enabled: true,
+    callback(message, meta, context) {
+      logMessages.push(message);
+      logMetas.push(meta);
+      logContexts.push(context);
     },
   });
-  logger.log("logging a");
+
+  const logger = new Logger().addOutput(callbackOutput);
+
+  logger.log("logging a", 10, {});
 
   logger.trace("logging b");
   logger.debug("logging c");
@@ -67,98 +58,70 @@ test("Log Messages", () => {
   logger.warn("logging e");
   logger.fatal("logging f");
 
-  const lines = logs.split("\n");
-  expect(lines[0]).toContain("fatal");
-  expect(lines[0]).toContain("logging a");
+  expect(logMetas[0].level).toBe(LogLevel.TRACE);
+  expect(logMessages[0]).toBe("logging a");
 
-  expect(lines[1]).toContain("trace");
-  expect(lines[1]).toContain("logging b");
+  expect(logMetas[1].level).toBe(LogLevel.TRACE);
+  expect(logMessages[1]).toBe("logging b");
 
-  expect(lines[2]).toContain("debug");
-  expect(lines[2]).toContain("logging c");
+  expect(logMetas[2].level).toBe(LogLevel.DEBUG);
+  expect(logMessages[2]).toBe("logging c");
 
-  expect(lines[3]).toContain("info");
-  expect(lines[3]).toContain("logging d");
+  expect(logMetas[3].level).toBe(LogLevel.INFO);
+  expect(logMessages[3]).toBe("logging d");
 
-  expect(lines[4]).toContain("warn");
-  expect(lines[4]).toContain("logging e");
+  expect(logMetas[4].level).toBe(LogLevel.WARN);
+  expect(logMessages[4]).toBe("logging e");
 
-  expect(lines[5]).toContain("fatal");
-  expect(lines[5]).toContain("logging f");
-
-  expect(lines.length).toBe(7);
+  expect(logMetas[5].level).toBe(LogLevel.FATAL);
+  expect(logMessages[5]).toBe("logging f");
 });
 
 test("Log messages with context", () => {
-  let logs = "";
-  const logger = new Logger({
-    outputs: {
-      console: { enabled: false },
-      callback: (message) => {
-        logs += message + "\n";
-      },
+  let logMessage: string = "";
+  let logMeta: LogMeta = { level: LogLevel.WARN, time: new Date() };
+  let logContext: LogContext = {};
+  const logger = new Logger();
+  const callbackOutput = new Callback({
+    enabled: true,
+    callback(message, meta, context) {
+      logMessage = message;
+      logMeta = meta;
+      logContext = context;
     },
   });
 
-  logger.debug("test context", { data: "hello world" });
+  logger.addOutput(callbackOutput);
+
+  logger.debug("test context 1", { data: "hello world" });
+  expect(logMessage).toBe("test context 1");
+  expect(logMeta.level).toBe(LogLevel.DEBUG);
+  expect(logContext.data).toBe("hello world");
+
   const req = new Request("https://www.github.com");
 
-  logger.info("test context", {
+  logger.info("test context 2", {
     request: req,
   });
 
-  const lines = logs.split("\n");
-  expect(lines[0]).toContain('{"level":20,"data":"hello world"}');
-  expect(lines[1]).toContain("https://www.github.com");
+  expect(logMessage).toBe("test context 2");
+  expect(logMeta.level).toBe(LogLevel.INFO);
+  expect(logContext.request).toBeTruthy();
 });
 
 test("Logs contain timestamps", () => {
-  let logs = "";
-  const logger = new Logger({
-    outputs: {
-      console: { enabled: false },
-      callback: (message) => {
-        logs += message + "\n";
-      },
+  const logger = new Logger();
+  const callbackOutput = new Callback({
+    enabled: true,
+    callback(_message, meta, _context) {
+      const logTime = meta.time;
+      expect(logTime.toISOString()).toMatch(
+        /^[0-9]+-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+.[0-9]+Z/gm
+      );
+      expect(new Date().valueOf() - logTime.valueOf()).toBeLessThan(1000);
     },
   });
 
-  logger.log("test");
-
-  expect(logs).toMatch(/^[0-9]+-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+.[0-9]+Z/gm);
-});
-
-test("Overflow logs buffer", () => {
-  const logger = new Logger({
-    bufferCapacity: 100,
-    outputs: { console: { enabled: false } },
-  });
-
-  for (let i = 0; i < 100; i++) {
-    logger.log(`Iteration: ${i}`);
-  }
-
-  logger.log("done");
-});
-
-test("Export logs without tampermonkey", async () => {
-  const logger = new Logger({ outputs: { console: { enabled: false } } });
-  for (let i = 0; i < 10; i++) {
-    logger.log(`Iteration: ${i}`);
-  }
-
-  const export_one = await logger.export(1);
-
-  expect(export_one.length).toBe(1);
-  expect(export_one[0]).toContain("Iteration: 9");
-
-  const export_five = await logger.export(5);
-
-  expect(export_five.length).toBe(5);
-  expect(export_five[3]).toContain("Iteration: 8");
-
-  const export_all = await logger.export(100);
-
-  expect(export_all.length).toBe(10);
-  expect(export_all[9]).toContain("Iteration: 9");
+  logger.addOutput(callbackOutput);
+  logger.debug("test");
 });
