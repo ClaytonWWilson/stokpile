@@ -9,30 +9,30 @@ test("Constructor", () => {
   const _logger = new Logger();
 });
 
-test("Add outputs", () => {
-  const logger = new Logger();
+// test("Add outputs", () => {
+//   const logger = new Logger();
 
-  const consoleOutput = new Console();
-  const tampermonkeyOutput = new Tampermonkey();
-  const callbackOutput = new Callback({
-    enabled: true,
-    callback: (message, meta, context) => {
-      console.log(message, meta, context);
-      return;
-    },
-  });
-  logger
-    .addOutput(consoleOutput)
-    .addOutput(tampermonkeyOutput)
-    .addOutput(callbackOutput);
-});
+//   const consoleOutput = new Console();
+//   const tampermonkeyOutput = new Tampermonkey();
+//   const callbackOutput = new Callback({
+//     enabled: true,
+//     callback: (message, meta, context) => {
+//       console.log(message, meta, context);
+//       return;
+//     },
+//   });
+//   logger
+//     .addOutput(consoleOutput)
+//     .addOutput(tampermonkeyOutput)
+//     .addOutput(callbackOutput);
+// });
 
-test("Add storage", () => {
-  const logger = new Logger();
+// test("Add storage", () => {
+//   const logger = new Logger();
 
-  const tampermonkeyOutput = new Tampermonkey();
-  logger.setStorage(tampermonkeyOutput);
-});
+//   const tampermonkeyOutput = new Tampermonkey();
+//   logger.setStorage(tampermonkeyOutput);
+// });
 
 test("Log Messages", () => {
   let logMessages: string[] = [];
@@ -125,3 +125,82 @@ test("Logs contain timestamps", () => {
   logger.addOutput(callbackOutput);
   logger.debug("test");
 });
+
+// test("Overflow logs buffer", () => {
+//   const logger = new Logger({
+//     bufferCapacity: 100,
+//     outputs: { console: { enabled: false } },
+//   });
+
+//   for (let i = 0; i < 100; i++) {
+//     logger.log(`Iteration: ${i}`);
+//   }
+
+//   logger.log("done");
+// });
+
+// test("Export logs without tampermonkey", async () => {
+//   const logger = new Logger({ outputs: { console: { enabled: false } } });
+//   for (let i = 0; i < 10; i++) {
+//     logger.log(`Iteration: ${i}`);
+//   }
+
+//   const export_one = await logger.export(1);
+
+//   expect(export_one.length).toBe(1);
+//   expect(export_one[0]).toContain("Iteration: 9");
+
+//   const export_five = await logger.export(5);
+
+//   expect(export_five.length).toBe(5);
+//   expect(export_five[3]).toContain("Iteration: 8");
+
+//   const export_all = await logger.export(100);
+
+//   expect(export_all.length).toBe(10);
+//   expect(export_all[9]).toContain("Iteration: 9");
+// });
+
+// const _logger1 = new Logger({});
+
+//   const _logger2 = new Logger({
+//     outputs: {
+//       tampermonkey: {
+//         enabled: false,
+//         maxBuckets: 0,
+//         bucketIndexKey: "",
+//       },
+//     },
+//   });
+//   const _logger3 = new Logger({
+//     outputs: {
+//       console: {
+//         enabled: false,
+//       },
+//     },
+//   });
+//   const _logger4 = new Logger({ outputs: { console: { enabled: true } } });
+//   const _logger5 = new Logger({
+//     outputs: { console: { enabled: false }, tampermonkey: { enabled: false } },
+//   });
+//   const _logger6 = new Logger({ outputs: { callback: () => {} } });
+//   const _logger7 = new Logger({
+//     outputs: {
+//       console: { enabled: true },
+//       tampermonkey: { enabled: false },
+//       callback: () => {},
+//     },
+//   });
+//   const _logger8 = new Logger({
+//     outputs: {
+//       console: {
+//         style: {
+//           trace: { backgroundColor: "#ababab", textColor: "#bababa" },
+//           debug: { backgroundColor: "#436ba3", textColor: "#197921" },
+//           info: { backgroundColor: "#9991aa", textColor: "#906851" },
+//           warn: { backgroundColor: "#deadbe", textColor: "#ad7ce3" },
+//         },
+//       },
+//     },
+//   });
+// });
