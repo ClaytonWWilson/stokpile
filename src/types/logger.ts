@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export enum LogLevel {
   TRACE = 10,
   DEBUG = 20,
@@ -14,14 +16,16 @@ export enum LogLabel {
   FATAL = "fatal",
 }
 
-export interface LogContext {
-  [key: string]: any;
-}
+export const LogContext = z.record(z.any());
 
-export interface LogMeta {
-  level: LogLevel;
-  time: Date;
-}
+export type LogContext = z.infer<typeof LogContext>;
+
+export const LogMeta = z.object({
+  level: z.nativeEnum(LogLevel),
+  time: z.date(),
+});
+
+export type LogMeta = z.infer<typeof LogMeta>;
 
 export interface LogData {
   message: string;

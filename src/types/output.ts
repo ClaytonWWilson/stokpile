@@ -1,3 +1,4 @@
+import { LogContext, LogMeta } from "logger";
 import { z } from "zod";
 
 export const ConsoleStyles = z
@@ -122,4 +123,12 @@ export interface TampermonkeyBucketInfo {
   name: string;
   size: number;
   createdAt: number;
+}
+
+export interface CallbackOutputConfig {
+  enabled: boolean;
+  callback:
+    | ((message: string, meta: LogMeta, context: LogContext) => void)
+    | ((message: string, meta: LogMeta, context: LogContext) => Promise<void>)
+    | undefined;
 }
