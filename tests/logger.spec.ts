@@ -77,6 +77,36 @@ test("Log Messages", () => {
   expect(logMessages[5]).toBe("logging f");
 });
 
+test("Log with multiple outputs", () => {
+  const logMessage = "Very important message";
+
+  function callbackfn(message: string, meta: LogMeta, _context: LogContext) {
+    expect(message).toBe(logMessage);
+    expect(meta.level).toBe(LogLevel.WARN);
+  }
+  const callbackOutput1 = new Callback({
+    enabled: true,
+    callback: callbackfn,
+  });
+
+  const callbackOutput2 = new Callback({
+    enabled: true,
+    callback: callbackfn,
+  });
+
+  const callbackOutput3 = new Callback({
+    enabled: true,
+    callback: callbackfn,
+  });
+
+  const logger = new Logger()
+    .addOutput(callbackOutput1)
+    .addOutput(callbackOutput2)
+    .addOutput(callbackOutput3);
+
+  logger.warn(logMessage);
+});
+
 test("Log messages with context", () => {
   let logMessage: string = "";
   let logMeta: LogMeta = { level: LogLevel.WARN, time: new Date() };
