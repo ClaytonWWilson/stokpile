@@ -1,5 +1,5 @@
 import { LogContext, LogLevel, LogMeta } from "./types/logger";
-import { Loggable, Storable } from "./interface/output";
+import { Buffered, Loggable, Storable } from "./interface/output";
 
 export class Logger {
   private outputs: Loggable[] = [];
@@ -17,8 +17,6 @@ export class Logger {
   }
 
   log(message: string, level: LogLevel, context: LogContext) {
-    // const label = getLabel(level);
-
     const meta: LogMeta = {
       level,
       time: new Date(),
@@ -54,5 +52,19 @@ export class Logger {
 
   fatal(message: string, context: LogContext = {}) {
     this.log(message, LogLevel.FATAL, context);
+  }
+
+  async flush() {
+    const promises = [];
+
+    for (const output of this.outputs) {
+      // BUG: Typescript doesn't realize that outputs can be Storables or Buffered as well
+      // @ts-ignore
+      if (output.flush) {
+        promises.push((output as Buffered).flush());
+      }
+    }
+
+    await Promise.allSettled(promises);
   }
 }

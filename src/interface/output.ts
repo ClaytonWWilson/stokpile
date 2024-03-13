@@ -9,3 +9,7 @@ export abstract class Storable extends Loggable {
     entries: number
   ): Promise<{ message: string; meta: LogMeta; context: LogContext }[]>;
 }
+
+export abstract class Buffered extends Storable {
+  abstract flush(): Promise<void>;
+}

@@ -1,4 +1,4 @@
-import { Storable } from "../interface/output";
+import { Buffered } from "../interface/output";
 import {
   StrictTampermonkeyOutputConfig,
   TampermonkeyBucketInfo,
@@ -7,7 +7,7 @@ import {
 import { gzip, randomString, ungzip } from "../lib/utilities";
 import { LogContext, LogData, LogMeta } from "../types/logger";
 
-export default class Tampermonkey implements Storable {
+export default class Tampermonkey implements Buffered {
   private buffer: LogData[];
   private bucketList: TampermonkeyBucketInfo[];
   private bufferCapacity: number;
