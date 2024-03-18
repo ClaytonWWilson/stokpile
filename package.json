@@ -1,5 +1,5 @@
 {
-  "name": "lognautica",
+  "name": "stokpile",
   "version": "0.0.1",
   "description": "Lightweight javascript logger with tampermonkey storage support",
   "main": "Logger.ts",
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ClaytonWWilson/lognautica.git"
+    "url": "git+https://github.com/ClaytonWWilson/stokpile.git"
   },
   "keywords": [
     "log",
@@ -33,9 +33,9 @@
   "author": "Clayton Wilson",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ClaytonWWilson/lognautica/issues"
+    "url": "https://github.com/ClaytonWWilson/stokpile/issues"
   },
-  "homepage": "https://github.com/ClaytonWWilson/lognautica#readme",
+  "homepage": "https://github.com/ClaytonWWilson/stokpile#readme",
   "dependencies": {
     "@rollup/plugin-node-resolve": "^15.2.3",
     "zod": "^3.22.4"

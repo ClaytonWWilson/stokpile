@@ -9,8 +9,8 @@ const productionBuildMinified = {
   output: {
     sourcemap: false,
     format: "es",
-    name: "lognautica",
-    file: "dist/lognautica.min.js",
+    name: "stokpile",
+    file: "dist/stokpile.min.js",
   },
   plugins: [
     nodeResolve({ preferBuiltins: true }),
@@ -33,8 +33,8 @@ const productionBuild = {
   output: {
     sourcemap: false,
     format: "es",
-    name: "lognautica",
-    file: "dist/lognautica.js",
+    name: "stokpile",
+    file: "dist/stokpile.js",
   },
   plugins: [
     nodeResolve({ preferBuiltins: true }),
@@ -55,8 +55,8 @@ const devBuild = {
   output: {
     sourcemap: true,
     format: "es",
-    name: "lognautica",
-    file: "dist/lognautica.dev.js",
+    name: "stokpile",
+    file: "dist/stokpile.dev.js",
   },
   plugins: [
     nodeResolve({ preferBuiltins: true }),
