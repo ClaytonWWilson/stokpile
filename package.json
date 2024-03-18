@@ -2,12 +2,16 @@
   "name": "stokpile",
   "version": "0.0.1",
   "description": "Lightweight javascript logger with tampermonkey storage support",
-  "main": "Logger.ts",
+  "main": "dist/index.js",
+  "type": "module",
   "directories": {
     "test": "tests"
   },
   "devDependencies": {
     "@playwright/test": "^1.42.1",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.11.25",
     "@types/rollup": "^0.54.0",
@@ -37,7 +41,6 @@
   },
   "homepage": "https://github.com/ClaytonWWilson/stokpile#readme",
   "dependencies": {
-    "@rollup/plugin-node-resolve": "^15.2.3",
     "zod": "^3.22.4"
   }
 }
